@@ -25,13 +25,14 @@ def proof_of_work(last_proof):
     print("Searching for next proof")
     #use last hash to make dynamic proof
     
-    enc_str = str(last_proof + 1).encode()
+    enc_str = str(last_proof).encode()
     proof = hashlib.sha256(enc_str).hexdigest()
 
     while valid_proof(last_proof, proof) is False:
-        enc_str = str(last_proof + 1).encode()
+        last_proof += 1
+        enc_str = str(last_proof).encode()
         proof = hashlib.sha256(enc_str).hexdigest()
-    
+        print(proof)
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
 
