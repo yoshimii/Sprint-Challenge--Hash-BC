@@ -45,10 +45,6 @@ def valid_proof(last_hash, proof):
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
 
-    # TODO: Your code here! 
-    # convert args into hex
-    # apply 256
-    # last 6 characters of last hash
     proof = str(proof)
     last_hash = str(last_hash)
     return last_hash[-6:] == proof[:6]
