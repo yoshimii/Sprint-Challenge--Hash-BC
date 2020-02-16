@@ -1,5 +1,6 @@
 import hashlib
 import requests
+import json
 
 import sys
 
@@ -25,14 +26,11 @@ def proof_of_work(last_proof):
     print("Searching for next proof")
     #use last hash to make dynamic proof
     
-    enc_str = str(last_proof).encode()
-    proof = hashlib.sha256(enc_str).hexdigest()
-
-    while valid_proof(last_proof, proof) is False:
-        last_proof += 1
-        enc_str = str(last_proof).encode()
-        proof = hashlib.sha256(enc_str).hexdigest()
-        print(proof)
+    proof_string = json.dumps(last_proof)
+    proof = last_proof
+    while valid_proof(proof_string, proof) is False:
+        proof += 1
+  
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
 
@@ -45,9 +43,14 @@ def valid_proof(last_hash, proof):
 
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
+    last_hash = hashlib.sha256(f'{last_hash}'.encode()).hexdigest()
 
-    proof = str(proof)
+    guess = f'{last_hash}{proof}'.encode()
+    guess_hash = hashlib.sha256(guess).hexdigest()
+    # print('GUESS HASH', guess_hash)
+    # print('LAST HASH', last_hash)
     last_hash = str(last_hash)
+    proof = str(proof)
     return last_hash[-6:] == proof[:6]
 
 
