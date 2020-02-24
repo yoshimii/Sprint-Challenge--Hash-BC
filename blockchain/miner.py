@@ -25,17 +25,15 @@ def proof_of_work(last_proof):
 
     print("Searching for next proof")
     #use last hash to make dynamic proof
-    
-    proof_string = json.dumps(last_proof)
     proof = last_proof
-    while valid_proof(proof_string, proof) is False:
+    while valid_proof(last_proof, proof) is False:
         proof += 1
   
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
 
 
-def valid_proof(last_hash, proof):
+def valid_proof(last_proof, proof):
     """
     Validates the Proof:  Multi-ouroborus:  Do the last six characters of
     the hash of the last proof match the first six characters of the hash
@@ -43,15 +41,19 @@ def valid_proof(last_hash, proof):
 
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
-    last_hash = hashlib.sha256(f'{last_hash}'.encode()).hexdigest()
+    # guess = f'{last_hash}{proof}'.encode()    
+    # guess_hash = hashlib.sha256(guess).hexdigest()
+    
+    # last_hash = hashlib.sha256(f'{last_hash}'.encode()).hexdigest()
+    # last_hash = str(last_hash)
+    
+    # proof = str(proof)
+    
+    last_hash = hashlib.sha256(str(last_proof).encode()).hexdigest()
+    guess = hashlib.sha256(str(proof).encode()).hexdigest()
 
-    guess = f'{last_hash}{proof}'.encode()
-    guess_hash = hashlib.sha256(guess).hexdigest()
-    # print('GUESS HASH', guess_hash)
-    # print('LAST HASH', last_hash)
-    last_hash = str(last_hash)
-    proof = str(proof)
-    return last_hash[-6:] == proof[:6]
+
+    return last_hash[-6:] == guess[:6]
 
 
 if __name__ == '__main__':
